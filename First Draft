@@ -2,7 +2,7 @@ import requests
 import json
 from azure.storage.blob import BlobServiceClient, ContainerClient
 
-# Define the base URL and endpoint path for QueueDefinitions
+# Define the base URL and endpoint path for the data
 base_url = "https://base_url"
 endpoint = "endpoint"
 
@@ -15,7 +15,7 @@ credentials = {
 
 # Initialize Azure Blob Storage client
 connection_string = "connection_string"
-container_name = "container_name"
+container_name = "container_name" # For each data create a corresponding folder to store the JSON file
 
 blob_service_client = BlobServiceClient.from_connection_string(connection_string)
 container_client = blob_service_client.get_container_client(container_name)
@@ -39,17 +39,17 @@ def fetch_and_store_data():
         response = requests.get(api_url, headers=headers)
         api_data = response.json()
 
-        # Step 3: Extract the "QueueDefinition" data
+        # Step 3: Extract the data
         if "value" in api_data:
-            queue_items = api_data["value"]
+            the_data = api_data["value"]
             
-            # Convert the queue_definitions list to a JSON string
-            queue_items_json = json.dumps(queue_items)
+            # Convert the data list to a JSON string
+            the_data_json = json.dumps(the_data)
 
             # Upload the JSON data to the blob
-            blob_name = "QueueItems.json"  # Specify the blob name
+            blob_name = "TheData.json"  # Specify the blob name
             blob_client = container_client.get_blob_client(blob_name)
-            blob_client.upload_blob(queue_items_json, overwrite=True)
+            blob_client.upload_blob(the_data_json, overwrite=True)
             
             print(f"Data uploaded to '{blob_name}' in '{container_name}' container.")
         else:
@@ -57,5 +57,5 @@ def fetch_and_store_data():
     except Exception as e:
         print(f"Error: {e}")
 
-# Fetch and store QueueDefinitions data
-fetch_and_store_queue_definitions()
+# Fetch and store data
+fetch_and_store_data()
